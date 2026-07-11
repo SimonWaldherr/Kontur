@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Kontur verwandelt Bilder lokal im Browser in bearbeitbare SVG-Dateien." />
+  <title>Kontur – Bilder in SVG verwandeln</title>
+  <script type="module" crossorigin src="./assets/preferences-BocDan-e.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/landing-BB0IVb3I.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="./" aria-label="Kontur Startseite">
+      <img src="./assets/kontur-mark-DJ_gaOQL.png" alt="" />
+      <span>Kontur</span>
+    </a>
+    <nav class="site-nav" aria-label="Seitennavigation">
+      <a href="#workflow">Ablauf</a>
+      <a href="#use-cases">Einsatzbereiche</a>
+    </nav>
+    <div class="preference-controls">
+      <label class="preference-select"><span class="sr-only">Sprache</span><select id="languageSelect" aria-label="Sprache"><option value="de">Deutsch</option><option value="en">English</option></select></label>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Farbschema ändern" aria-pressed="false"><span aria-hidden="true">◐</span><span class="theme-label">Darstellung</span></button>
+      <a class="header-action" href="./tool.html">Tool starten <span aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <div class="hero-kicker"><span class="live-dot" aria-hidden="true"></span> Lokal im Browser · Kein Upload nötig</div>
+        <p class="eyebrow">Bitmap → bearbeitbare SVG</p>
+        <h1 id="heroTitle">Deine Grafik. Saubere Vektoren. Sofort.</h1>
+        <p class="lede">Kontur verwandelt Logos, Schrift und Farbflächen in präzise SVG-Dateien – mit einer klaren Vorschau, einfachen Einstellungen und einem Editor für den letzten Feinschliff.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="./tool.html">Bild vektorisieren <span aria-hidden="true">→</span></a>
+          <a class="button secondary" href="#workflow">Ablauf ansehen</a>
+        </div>
+        <dl class="hero-facts">
+          <div><dt>100 % lokal</dt><dd>Deine Datei bleibt auf deinem Gerät.</dd></div>
+          <div><dt>SVG-first</dt><dd>Prüfen, editieren und exportieren.</dd></div>
+        </dl>
+      </div>
+
+      <div class="hero-workbench" aria-label="Vorschau der Kontur-Arbeitsfläche">
+        <div class="workbench-bar"><span class="workbench-title"><i aria-hidden="true"></i> Vektorvorschau</span><span class="workbench-state">Bereit zum Export</span></div>
+        <div class="workbench-stage">
+          <div class="source-chip"><span class="file-dot" aria-hidden="true"></span> logo.png</div>
+          <div class="vector-card">
+            <img src="./assets/kontur-mark-DJ_gaOQL.png" alt="" />
+            <span class="vector-label">SVG</span>
+          </div>
+          <div class="path-hint"><span aria-hidden="true">↗</span> Pfade direkt bearbeiten</div>
+        </div>
+        <div class="workbench-footer"><span><b>24</b> Pfade</span><span><b>2</b> Farblayer</span><span><b>12 KB</b> SVG</span></div>
+      </div>
+    </section>
+
+    <section class="proof" aria-label="Vorteile von Kontur">
+      <article><span class="proof-index">01</span><strong>Privat by design</strong><p>Die Browser-Version verarbeitet deine Bilddaten lokal.</p></article>
+      <article><span class="proof-index">02</span><strong>Kontrolle ohne Komplexität</strong><p>Auto startet direkt, Standard und Expert öffnen nur bei Bedarf.</p></article>
+      <article><span class="proof-index">03</span><strong>Für echte Weiterarbeit</strong><p>Vergleiche, bearbeite und exportiere eine saubere SVG.</p></article>
+    </section>
+
+    <section class="section workflow-section" id="workflow" aria-labelledby="workflowTitle">
+      <div class="section-heading">
+        <p class="eyebrow">Ein klarer Ablauf</p>
+        <h2 id="workflowTitle">Vom Bild zur verwendbaren Datei – ohne Umwege.</h2>
+        <p>Kontur hält den Start bewusst einfach und macht die Werkzeuge erst sichtbar, wenn sie dir wirklich helfen.</p>
+      </div>
+      <ol class="steps">
+        <li><span>01</span><div><h3>Bild auswählen</h3><p>Lade ein Logo, eine Zeichnung oder ein Farbbild hoch. Auto analysiert es direkt.</p></div></li>
+        <li><span>02</span><div><h3>Ergebnis prüfen</h3><p>Original, Vorlage und SVG stehen nebeneinander für einen schnellen, sicheren Vergleich.</p></div></li>
+        <li><span>03</span><div><h3>Vektor verfeinern</h3><p>Bearbeite Pfade und Farblayer direkt im Browser, dann exportiere deine SVG.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="section use-cases" id="use-cases" aria-labelledby="useCasesTitle">
+      <div class="section-heading">
+        <p class="eyebrow">Gemacht für klare Formen</p>
+        <h2 id="useCasesTitle">Ein Werkzeug für Grafiken, die weiterarbeiten sollen.</h2>
+      </div>
+      <div class="case-grid">
+        <article><span class="case-number">A</span><h3>Logos &amp; Schrift</h3><p>Details bleiben nachvollziehbar und direkt editierbar.</p><span class="case-link">Konturtreu</span></article>
+        <article><span class="case-number">B</span><h3>Symbole &amp; Wappen</h3><p>Komplexe Formen sauber skalieren und zuverlässig prüfen.</p><span class="case-link">Skalierbar</span></article>
+        <article><span class="case-number">C</span><h3>Farbflächen</h3><p>Mehrfarbige Bilder in bearbeitbare Ebenen überführen.</p><span class="case-link">Layerfähig</span></article>
+      </div>
+    </section>
+
+    <section class="cta" aria-labelledby="ctaTitle">
+      <div>
+        <p class="eyebrow">Bereit, wenn du es bist</p>
+        <h2 id="ctaTitle">Mach aus deinem nächsten Bild eine SVG.</h2>
+        <p>Starte mit dem einfachen Auto-Modus. Für alles Weitere bleiben die passenden Werkzeuge griffbereit.</p>
+      </div>
+      <a class="button primary" href="./tool.html">Kontur öffnen <span aria-hidden="true">→</span></a>
+    </section>
+  </main>
+
+  <footer>
+    <a class="wordmark footer-mark" href="./"><img src="./assets/kontur-mark-DJ_gaOQL.png" alt="" /><span>Kontur</span></a>
+    <p>Lokales Bitmap-Tracing für bearbeitbare SVGs.</p>
+    <a href="./tool.html">Zum Tool <span aria-hidden="true">→</span></a>
+  </footer>
+</body>
+</html>

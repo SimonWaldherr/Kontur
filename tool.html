@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Kontur – Vektorwerkzeug</title>
+  <script type="module" crossorigin src="./assets/tool-8g7IfiAO.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/preferences-BocDan-e.js">
+  <link rel="stylesheet" crossorigin href="./assets/tool-DD53dsA3.css">
+</head>
+<body data-mode="auto">
+  <a class="skip-link" href="#workspace">Direkt zum Arbeitsbereich springen</a>
+  <header class="topbar">
+    <div class="topbar-heading">
+      <a href="./" class="tool-home brand-lockup" aria-label="Kontur Startseite">
+        <img src="./assets/kontur-mark-DJ_gaOQL.png" alt="" />
+        <span><b>Kontur</b><small>Vector Studio</small></span>
+      </a>
+      <span class="local-badge"><i aria-hidden="true"></i> Verarbeitung lokal</span>
+    </div>
+    <div class="topbar-right">
+      <div class="mode-switch" role="group" aria-label="Bedienmodus">
+        <button type="button" data-mode-btn="auto" aria-pressed="true"><span>Auto</span><small>Schnellstart</small></button>
+        <button type="button" data-mode-btn="standard" aria-pressed="false"><span>Standard</span><small>Feinjustieren</small></button>
+        <button type="button" data-mode-btn="expert" aria-pressed="false"><span>Expert</span><small>Volle Kontrolle</small></button>
+      </div>
+      <div class="preference-controls" aria-label="Darstellung und Sprache">
+        <label class="preference-select"><span class="visually-hidden">Sprache</span><select id="languageSelect" aria-label="Sprache"><option value="de">Deutsch</option><option value="en">English</option></select></label>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Farbschema ändern" aria-pressed="false"><span aria-hidden="true">◐</span><span class="theme-label">Darstellung</span></button>
+      </div>
+      <button id="dependenciesButton" class="pill dependency-trigger" type="button" aria-haspopup="dialog" aria-controls="dependenciesDialog" aria-expanded="false" aria-label="Technik und Lizenzen anzeigen">
+        Info
+      </button>
+    </div>
+  </header>
+  <dialog id="dependenciesDialog" class="dependencies-dialog" aria-labelledby="dependenciesTitle">
+    <div class="dependencies-dialog-header">
+      <div>
+        <p class="eyebrow">Technik &amp; Lizenzen</p>
+        <h2 id="dependenciesTitle">Worauf Kontur aufbaut</h2>
+      </div>
+      <button id="closeDependencies" type="button" class="dialog-close" aria-label="Hinweis schließen">×</button>
+    </div>
+    <p>Kontur kombiniert bewährte Open-Source-Werkzeuge für Vektorisierung, Bildverarbeitung und die Weboberfläche.</p>
+    <p id="engineStatus" class="dependency-engine">Engine wird geprüft …</p>
+    <div class="dependency-list" role="list">
+      <article role="listitem"><strong><a href="https://potrace.sourceforge.net/" target="_blank" rel="noreferrer">Potrace</a></strong><span>Kontur- und Pfadvektorisierung · GPL-2.0</span></article>
+      <article role="listitem"><strong><a href="https://www.npmjs.com/package/esm-potrace-wasm" target="_blank" rel="noreferrer">esm-potrace-wasm</a></strong><span>Potrace im Browser per WebAssembly · GPL-2.0</span></article>
+      <article role="listitem"><strong><a href="https://github.com/jankovicsandras/imagetracerjs" target="_blank" rel="noreferrer">ImageTracerJS</a></strong><span>Optionale Farblayer-Vergleichsengine · Unlicense</span></article>
+      <article role="listitem"><strong><a href="https://fastapi.tiangolo.com/" target="_blank" rel="noreferrer">FastAPI</a> · <a href="https://www.uvicorn.org/" target="_blank" rel="noreferrer">Uvicorn</a></strong><span>Server-API und lokale Laufzeit</span></article>
+      <article role="listitem"><strong><a href="https://python-pillow.org/" target="_blank" rel="noreferrer">Pillow</a> · <a href="https://numpy.org/" target="_blank" rel="noreferrer">NumPy</a> · <a href="https://scipy.org/" target="_blank" rel="noreferrer">SciPy</a></strong><span>Bildverarbeitung, Analyse und Filter</span></article>
+      <article role="listitem"><strong><a href="https://vite.dev/" target="_blank" rel="noreferrer">Vite</a></strong><span>Statischer Browser-Build für GitHub Pages</span></article>
+    </div>
+    <small>Die vollständigen direkten Abhängigkeiten stehen in <code>requirements.txt</code>, <code>package.json</code> und <code>package-lock.json</code>. Für die Veröffentlichung gelten die jeweiligen Lizenzbedingungen der verwendeten Projekte.</small>
+  </dialog>
+  <p id="modeHint" class="mode-hint"></p>
+
+  <main class="layout">
+    <aside class="controls" aria-label="Vektorisierungs-Einstellungen">
+      <section class="card upload-card" id="dropzone">
+        <div class="section-label"><span>Schritt 1</span><span class="upload-local">Privat</span></div>
+        <h2>Bild auswählen</h2>
+        <label class="file-picker" for="file" tabindex="0"><span class="file-picker-icon" aria-hidden="true">+</span><span>Bilddatei auswählen</span></label>
+        <input id="file" class="visually-hidden" type="file" accept="image/*,.pbm,.pgm,.ppm,.bmp,.tif,.tiff" aria-describedby="fileHelp" />
+        <p id="fileHelp">Ziehe ein Bild hierher oder wähle eine Datei. Die Vorschau wird automatisch erstellt.</p>
+        <p class="upload-formats">PNG · JPG · WebP · BMP · TIFF</p>
+      </section>
+
+      <section class="card guide-card" id="guideCard" data-modes="auto">
+        <div class="section-label"><span>Dein Ablauf</span></div>
+        <h2>In drei klaren Schritten.</h2>
+        <ol class="guide-list">
+          <li><strong>Bild hochladen</strong><span>Auto startet direkt mit Potrace.</span></li>
+          <li><strong>Bei Bedarf feinjustieren</strong><span>In Standard oder Expert kannst du Farben, Glättung und Engine ändern.</span></li>
+          <li><strong>Ergebnis prüfen &amp; exportieren</strong><span>SVG, Vergleich und Pfad-Editor helfen beim letzten Feinschliff.</span></li>
+        </ol>
+        <details>
+          <summary>Wann nehme ich welche Engine?</summary>
+          <p><strong>Potrace</strong> ist der Standard und für Text, Logos und klare Konturen empfohlen. <strong>ImageTracerJS</strong> ist eine freiwillige Alternative zum Vergleichen von Farblayern; es wird nie automatisch gewählt.</p>
+        </details>
+      </section>
+
+      <section class="card auto-summary" id="autoSummaryCard" data-modes="auto">
+        <div class="section-label"><span>Schritt 2</span><span class="auto-indicator"><i aria-hidden="true"></i> Auto</span></div>
+        <h2>Automatische Erkennung</h2>
+        <div id="autoSummary" class="auto-summary-body">
+          <p class="editor-empty">Nach dem Upload wählt Auto passende Einstellungen selbst aus.</p>
+        </div>
+        <button type="button" id="autoToStandard">Übernehmen &amp; in Standard feinjustieren</button>
+      </section>
+
+      <section class="card primary-colour-card" id="primaryColorCard" data-modes="auto standard expert">
+        <div class="control-group-heading"><div><span class="section-label">Auto-Farben</span><h2>Hauptfarben-Abdeckung</h2></div><span class="control-group-note">Auto</span></div>
+        <label>Abdeckung <span id="primary_color_coverage_value">60%</span>
+          <input id="primary_color_coverage" name="primary_color_coverage" type="range" min="50" max="95" step="5" value="60" aria-describedby="primaryColorCoverageHelp" />
+          <small id="primaryColorCoverageHelp">Kontur wählt die kleinste Zahl an Hauptfarben, die zusammen diesen Anteil der Vordergrundpixel abdecken. Der Außenhintergrund zählt nicht mit.</small>
+        </label>
+        <div class="primary-colour-actions">
+          <button type="button" id="detectPrimaryColors">Hauptfarben automatisch bestimmen</button>
+          <p id="primaryColorSummary" class="editor-empty" aria-live="polite">60% Abdeckung wird beim Auto-Trace verwendet.</p>
+        </div>
+      </section>
+
+      <section class="card settings-card" data-modes="standard expert">
+        <div class="section-label"><span>Schritt 2</span><span>Einstellungen</span></div>
+        <h2>Einfach einstellen</h2>
+        <p class="settings-intro">Starte mit einem Preset oder passe nur die Regler an, die für dein Bild wichtig sind.</p>
+        <h3 class="settings-subheading">Presets</h3>
+        <div class="button-row">
+          <button type="button" data-preset="logo">Logo</button>
+          <button type="button" data-preset="scan">Scan</button>
+          <button type="button" data-preset="plotter">Plotter</button>
+          <button type="button" data-preset="smooth_icon">Smooth Icon</button>
+        </div>
+      </section>
+
+      <section class="card settings-card control-group" data-modes="standard expert">
+        <div class="control-group-heading"><div><span class="section-label">Bild</span><h2>Vorverarbeitung</h2></div><span class="control-group-note">Optional</span></div>
+        <p class="browser-capability-note" id="browserPreprocessNote" hidden>Browser-Version: Alpha, Tonwerte, Blur und Schwellwerte laufen lokal. Der adaptive Schwellwert ist browserseitig eine lokale Näherung. Median, Morphologie und Objektfilter gibt es in der Server-Version.</p>
+        <label>Schwellwertmodus
+          <select id="threshold_mode" name="threshold_mode">
+            <option value="otsu">Otsu automatisch</option>
+            <option value="fixed">Fixer Schwellwert</option>
+            <option value="adaptive">Adaptiv lokal</option>
+          </select>
+        </label>
+        <label>Fixer Schwellwert <span id="threshold_value">128</span>
+          <input id="threshold" name="threshold" type="range" min="0" max="255" value="128" />
+        </label>
+        <label>Adaptive Radius <span id="adaptive_radius_value">12</span>
+          <input id="adaptive_radius" name="adaptive_radius" type="range" min="2" max="80" value="12" />
+        </label>
+        <label>Adaptive Offset <span id="adaptive_offset_value">7</span>
+          <input id="adaptive_offset" name="adaptive_offset" type="range" min="-40" max="40" step="0.5" value="7" />
+        </label>
+        <label class="check"><input id="invert" name="invert" type="checkbox" /> Invertieren</label>
+        <label>Alpha-Behandlung
+          <select id="alpha_mode" name="alpha_mode">
+            <option value="white">Transparenz auf Weiß</option>
+            <option value="black">Transparenz auf Schwarz</option>
+            <option value="keep">Standard</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="card settings-card control-group" data-modes="expert">
+        <div class="control-group-heading"><div><span class="section-label">Bild</span><h2>Feinabstimmung</h2></div><span class="control-group-note">Expert</span></div>
+        <label>Blur <span id="blur_radius_value">0</span>
+          <input id="blur_radius" name="blur_radius" type="range" min="0" max="10" step="0.1" value="0" />
+        </label>
+        <label data-browser-server-only>Median <span id="median_size_value">0</span>
+          <input id="median_size" name="median_size" type="range" min="0" max="9" step="1" value="0" />
+        </label>
+        <label>Helligkeit <span id="brightness_value">1</span>
+          <input id="brightness" name="brightness" type="range" min="0.2" max="3" step="0.05" value="1" />
+        </label>
+        <label>Kontrast <span id="contrast_value">1</span>
+          <input id="contrast" name="contrast" type="range" min="0.2" max="4" step="0.05" value="1" />
+        </label>
+        <label>Gamma <span id="gamma_value">1</span>
+          <input id="gamma" name="gamma" type="range" min="0.2" max="4" step="0.05" value="1" />
+        </label>
+        <label data-browser-server-only>Opening <span id="morph_open_value">0</span>
+          <input id="morph_open" name="morph_open" type="range" min="0" max="5" step="1" value="0" />
+        </label>
+        <label data-browser-server-only>Closing <span id="morph_close_value">0</span>
+          <input id="morph_close" name="morph_close" type="range" min="0" max="5" step="1" value="0" />
+        </label>
+        <label data-browser-server-only>Kleine Objekte entfernen <span id="remove_small_objects_value">0</span> px
+          <input id="remove_small_objects" name="remove_small_objects" type="range" min="0" max="1000" step="1" value="0" />
+        </label>
+      </section>
+
+      <section class="card settings-card control-group" data-modes="standard expert">
+        <div class="control-group-heading"><div><span class="section-label">Schritt 3</span><h2>Trace konfigurieren</h2></div><span class="control-group-note">SVG</span></div>
+        <label id="traceEngineCard">Browser-Trace-Engine
+          <select id="traceEngine" name="traceEngine">
+            <option value="potrace">Potrace-WASM · empfohlen</option>
+            <option value="imagetracer">ImageTracerJS · nur zum Vergleichen</option>
+          </select>
+          <small>Potrace bleibt die Voreinstellung – auch für Farbbilder. Die Auswahl läuft lokal im Browser.</small>
+        </label>
+        <label data-modes="standard">Kurvenglättung &amp; Punkte verbinden <span id="smoothness_value">50</span>
+          <input id="smoothness" type="range" min="0" max="100" step="1" value="50" />
+          <small>Links konturtreu, rechts glatter und mit weniger kleinen Punktinseln.</small>
+        </label>
+        <label>Farbe
+          <input id="color" name="color" type="color" value="#111111" />
+        </label>
+        <label data-modes="expert">Turdsize <span id="turdsize_value">2</span>
+          <input id="turdsize" name="turdsize" type="range" min="0" max="100" step="1" value="2" />
+        </label>
+        <label data-modes="expert">Turnpolicy
+          <select id="turnpolicy" name="turnpolicy">
+            <option value="minority">minority</option>
+            <option value="majority">majority</option>
+            <option value="black">black</option>
+            <option value="white">white</option>
+            <option value="left">left</option>
+            <option value="right">right</option>
+            <option value="random">random</option>
+          </select>
+        </label>
+        <label data-modes="expert">Alphamax <span id="alphamax_value">1</span>
+          <input id="alphamax" name="alphamax" type="range" min="0" max="1.333" step="0.01" value="1" />
+        </label>
+        <label class="check" data-modes="expert"><input id="opticurve" name="opticurve" type="checkbox" checked /> Opticurve aktiv</label>
+        <label data-modes="expert">Opttolerance <span id="opttolerance_value">0.2</span>
+          <input id="opttolerance" name="opttolerance" type="range" min="0" max="2" step="0.01" value="0.2" />
+        </label>
+        <label data-modes="expert">SVG-Präzision <span id="svg_precision_value">3</span>
+          <input id="svg_precision" name="svg_precision" type="range" min="0" max="8" step="1" value="3" />
+        </label>
+        <label class="check" data-modes="expert"><input id="optimize_svg" name="optimize_svg" type="checkbox" checked /> SVG vereinfachen</label>
+        <button id="traceButton" type="button" class="primary-button trace-action">Vorschau aktualisieren</button>
+      </section>
+
+      <section class="card settings-card control-group" data-modes="standard expert">
+        <div class="control-group-heading"><div><span class="section-label">Optional</span><h2>Farbe &amp; Layer</h2></div><span class="control-group-note">Mehrfarbig</span></div>
+        <p class="browser-capability-note" id="browserLayerNote" hidden>Browser-Version: Farblayer, Hintergrund-Erkennung, Farbinseln-Bereinigung und Kantenüberlappung laufen lokal. Sehr große Bilder benötigen dafür etwas mehr Rechenzeit.</p>
+        <label>Posterize-Farben <span id="posterize_levels_value">1</span>
+          <input id="posterize_levels" name="posterize_levels" type="range" min="1" max="12" step="1" value="1" />
+        </label>
+        <div id="posterizePalettePreview" class="posterize-palette-preview" aria-live="polite">
+          <p class="editor-empty">Nach dem Upload siehst du hier die voraussichtlichen Paletten für jede Farbanzahl.</p>
+        </div>
+        <label class="check"><input id="posterize_skip_background" name="posterize_skip_background" type="checkbox" checked /> dominanten/weißen Hintergrund überspringen</label>
+        <label>Ähnliche Farbinseln angleichen <span id="posterize_color_merge_value">28</span>
+          <input id="posterize_color_merge" name="posterize_color_merge" type="range" min="0" max="100" step="1" value="28" />
+          <small>Gleicht nur kleine, direkt angrenzende Farbfragmente an. 0 deaktiviert diese Bereinigung.</small>
+        </label>
+        <label>Speckle-Filter <span id="posterize_min_region_value">0</span> px
+          <input id="posterize_min_region" name="posterize_min_region" type="range" min="0" max="60" step="1" value="0" />
+          <small>Entfernt isolierte Farbinseln entlang der Konturen. Kleine Werte von 2–6 eignen sich gut für komprimierte Logos.</small>
+        </label>
+        <div id="layers" class="layers"></div>
+      </section>
+
+      <section class="card export-card">
+        <div class="control-group-heading"><div><span class="section-label">Schritt 4</span><h2>Export</h2></div><span class="control-group-note">Final</span></div>
+        <div class="button-row export-row">
+          <button type="button" data-backend="svg">SVG</button>
+          <button type="button" data-backend="dxf" data-browser-server-only>DXF</button>
+          <button type="button" data-backend="eps" data-browser-server-only>EPS</button>
+          <button type="button" data-backend="pdf" data-browser-server-only>PDF</button>
+        </div>
+        <div data-modes="expert" data-browser-server-only class="expert-export">
+          <label>Weiteres Backend
+            <select id="extraBackend">
+              <option value="gimppath">gimppath</option>
+              <option value="ps">ps</option>
+              <option value="pdfpage">pdfpage</option>
+              <option value="geojson">geojson</option>
+              <option value="pgm">pgm</option>
+            </select>
+          </label>
+          <button type="button" id="extraExportButton">Exportieren</button>
+        </div>
+        <div data-modes="standard expert" data-browser-server-only>
+          <hr />
+          <label>Batch-Dateien
+            <input id="batchFiles" type="file" multiple accept="image/*,.pbm,.pgm,.ppm,.bmp,.tif,.tiff" />
+          </label>
+          <button id="batchButton" type="button">Batch als ZIP</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="workspace" id="workspace" tabindex="-1" aria-label="Vorschau und SVG-Editor">
+      <div class="workspace-topline">
+        <div class="workspace-context">
+          <span class="workspace-overline">Arbeitsfläche</span>
+          <strong id="fileSummary">Noch kein Bild ausgewählt</strong>
+        </div>
+        <div class="workspace-actions">
+          <span class="workspace-local"><i aria-hidden="true"></i> Lokal verarbeitet</span>
+          <button id="workspaceExport" type="button" class="workspace-export" data-backend="svg" disabled>SVG exportieren <span aria-hidden="true">↓</span></button>
+        </div>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true"></i>Bereit.</div>
+      <section class="quickstart" id="quickstart" aria-labelledby="quickstartTitle">
+        <div>
+          <p class="eyebrow">Schnellstart</p>
+          <h2 id="quickstartTitle">Zieh dein Bild in den Vektor-Workflow.</h2>
+          <p>Wähle eine Datei aus und Kontur erstellt direkt eine lokale SVG-Vorschau. Danach vergleichst, bearbeitest und exportierst du das Ergebnis.</p>
+          <label class="welcome-upload" for="file"><span aria-hidden="true">+</span> Bild auswählen</label>
+        </div>
+        <div class="workflow-steps" aria-label="Arbeitsablauf">
+          <span><i>1</i><b>Hochladen</b><small>PNG, JPG, WebP und mehr</small></span>
+          <span><i>2</i><b>Prüfen</b><small>Original und SVG vergleichen</small></span>
+          <span><i>3</i><b>Exportieren</b><small>Direkt als SVG speichern</small></span>
+        </div>
+      </section>
+      <div class="preview-grid">
+        <article class="preview-card source-card" id="sourcePreview" data-source-view="original">
+          <div class="card-heading">
+            <div>
+              <span class="card-kicker">Quelle</span>
+              <h2>Original &amp; Vorlage</h2>
+              <p>Dein Bild und die aufbereitete Trace-Vorlage.</p>
+            </div>
+            <div class="preview-switch" role="group" aria-label="Rasteransicht">
+              <button type="button" data-source-view-btn="original">Original</button>
+              <button type="button" data-source-view-btn="layers"><span id="maskPreviewTitle">Binärmaske</span></button>
+            </div>
+          </div>
+          <div class="stage source-stage">
+            <p class="stage-empty">Nach dem Upload erscheinen hier Original und aufbereitete Vorlage.</p>
+            <img id="originalPreview" alt="Originalvorschau" />
+            <img id="binaryPreview" alt="Binäre Vorschau" />
+          </div>
+        </article>
+        <article class="preview-card wide result-card" id="resultPreview" data-result-view="vector">
+          <div class="card-heading">
+            <div>
+              <span class="card-kicker">Ergebnis</span>
+              <h2>SVG prüfen</h2>
+              <p id="resultViewHint">Klicke Pfade direkt in der SVG an, um sie zu bearbeiten.</p>
+            </div>
+            <div class="preview-switch" role="group" aria-label="Vektoransicht">
+              <button type="button" data-result-view-btn="vector">SVG</button>
+              <button type="button" data-result-view-btn="compare">Vergleich</button>
+            </div>
+          </div>
+          <div class="result-panel" id="vectorResultPanel">
+            <div class="stage svg-stage" id="svgPreview">
+              <p class="stage-empty stage-empty-vector">Die bearbeitbare SVG erscheint nach dem ersten Trace hier.</p>
+            </div>
+          </div>
+          <div class="result-panel" id="compareResultPanel" hidden>
+            <div class="compare-panel-heading">
+              <p id="compareInstruction">Ziehe die Trennlinie direkt im Bild: links Vektor, rechts Original.</p>
+              <span class="compare-readout" id="compareReadout">Vektor links 50%</span>
+            </div>
+            <div class="compare-stage" id="compareStage" style="--compare-position: 50%;" aria-describedby="compareInstruction compareReadout">
+              <img id="compareOriginal" alt="Original für den Direktvergleich" />
+              <div class="compare-vector" id="compareVector" aria-hidden="true"></div>
+              <div class="compare-divider" aria-hidden="true"><i></i></div>
+              <div class="compare-side-labels" aria-hidden="true"><span>Vektor</span><span>Original</span></div>
+              <p class="stage-empty stage-empty-compare">Nach dem Trace kannst du Vektor und Original direkt vergleichen.</p>
+              <input id="compareRange" class="compare-range" type="range" min="0" max="100" value="50" aria-label="Vergleichsposition: links Vektor, rechts Original" aria-describedby="compareInstruction" />
+            </div>
+          </div>
+        </article>
+        <section class="card vector-editor" aria-labelledby="vectorEditorTitle" data-modes="standard expert">
+          <div class="card-heading editor-appbar">
+            <div>
+              <p class="editor-app-label">Schritt 4 · SVG-Editor</p>
+              <h2 id="vectorEditorTitle">Verfeinern</h2>
+            </div>
+            <div class="editor-app-actions" role="group" aria-label="Schnellaktionen">
+              <button type="button" data-editor-proxy="undoEditor" aria-label="Rückgängig" title="Rückgängig">↶</button>
+              <button type="button" data-editor-proxy="redoEditor" aria-label="Wiederholen" title="Wiederholen">↷</button>
+              <button type="button" data-editor-proxy="resetSvgEditor" aria-label="Änderungen verwerfen" title="Änderungen verwerfen">↺</button>
+              <button id="exportEditedSvg" type="button" disabled>Exportieren</button>
+            </div>
+          </div>
+          <div class="editor-grid">
+            <section class="editor-panel editor-layers-panel">
+              <h3>Farblayer</h3>
+              <div id="editorLayerControls" class="editor-layer-controls" aria-live="polite">
+                <p class="editor-empty">Nach dem ersten Trace erscheinen hier die Farblayer.</p>
+              </div>
+              <p class="editor-empty editor-layer-export-hint">Häkchen steuern Sichtbarkeit und Export. Mit ↑/↓ änderst du die Stapelreihenfolge; Farbe und Deckkraft gelten für den ganzen Layer. Für eine Maske zuerst die sichtbare Maskenform auswählen.</p>
+              <button id="exportVisibleLayers" type="button" disabled>Sichtbare Layer exportieren</button>
+            </section>
+            <section class="editor-panel editor-tools-panel">
+              <h3>Auswahl &amp; Bereinigung</h3>
+              <p class="editor-empty">Klicke Pfade an oder ziehe auf leerer Fläche einen Auswahlrahmen auf. Ziehe eine bestehende Auswahl direkt in der Grafik, um sie zu verschieben.</p>
+              <div class="selection-toolbar" role="group" aria-label="Pfadauswahl">
+                <button id="selectAllPaths" type="button" disabled>Alle auswählen</button>
+                <button id="invertPathSelection" type="button" disabled>Auswahl umkehren</button>
+                <button id="clearPathSelection" type="button" disabled>Aufheben</button>
+              </div>
+              <div class="selection-gesture-controls">
+                <label>Auswahlform
+                  <select id="selectionGestureShape">
+                    <option value="rectangle">Rechteck</option>
+                    <option value="polygon">Polygon</option>
+                    <option value="freehand">Freihand</option>
+                  </select>
+                </label>
+                <label>Trefferregel
+                  <select id="selectionGestureRule">
+                    <option value="touch">Berührt den Rahmen</option>
+                    <option value="inside">Komplett im Rahmen</option>
+                  </select>
+                </label>
+              </div>
+              <small class="selection-gesture-hint">Polygon: Punkte klicken und mit Doppelklick oder Enter abschließen. Freihand: auf leerer Fläche zeichnen.</small>
+              <div class="editor-history" role="group" aria-label="Bearbeitungsverlauf">
+                <button id="undoEditor" type="button" disabled>Rückgängig</button>
+                <button id="redoEditor" type="button" disabled>Wiederholen</button>
+              </div>
+              <p id="editorSelection" class="editor-empty" aria-live="polite">Klicke in der SVG-Vorschau auf einen Pfad, um ihn zu färben oder zu löschen.</p>
+              <details class="editor-transform-panel" open>
+                <summary>Duplizieren, Anordnen &amp; Ausrichten</summary>
+                <p class="editor-empty">Mehrere Pfade lassen sich relativ zu ihrer gemeinsamen Auswahl ausrichten oder gleichmäßig verteilen.</p>
+                <h4>Objekte</h4>
+                <div class="editor-command-grid">
+                  <button id="duplicateSelectedPaths" type="button" disabled>Duplizieren</button>
+                  <button id="sendSelectionBackward" type="button" disabled>Eine Ebene zurück</button>
+                  <button id="bringSelectionForward" type="button" disabled>Eine Ebene vor</button>
+                  <button id="sendSelectionToBack" type="button" disabled>Ganz nach hinten</button>
+                  <button id="bringSelectionToFront" type="button" disabled>Ganz nach vorn</button>
+                </div>
+                <h4>Ausrichten</h4>
+                <div class="editor-command-grid editor-align-grid">
+                  <button id="alignSelectionLeft" type="button" disabled>Links</button>
+                  <button id="alignSelectionCenterX" type="button" disabled>Horizontal mittig</button>
+                  <button id="alignSelectionRight" type="button" disabled>Rechts</button>
+                  <button id="alignSelectionTop" type="button" disabled>Oben</button>
+                  <button id="alignSelectionCenterY" type="button" disabled>Vertikal mittig</button>
+                  <button id="alignSelectionBottom" type="button" disabled>Unten</button>
+                  <button id="distributeSelectionHoriz" type="button" disabled>Horizontal verteilen</button>
+                  <button id="distributeSelectionVertical" type="button" disabled>Vertikal verteilen</button>
+                </div>
+              </details>
+              <details class="editor-tool-panel">
+                <summary>Füllung &amp; Farblayer</summary>
+                <p class="editor-empty">Farbe angleichen bündelt vollständige, ausgewählte Farblayer in der Layerliste. Die einzelnen Formen bleiben dabei erhalten.</p>
+                <button id="mergeSelectedLayers" type="button" disabled>Farben angleichen &amp; Layer bündeln</button>
+                <div class="gradient-controls">
+                  <label>Startfarbe <input id="gradientStartColor" type="color" value="#2563eb" /></label>
+                  <label>Endfarbe <input id="gradientEndColor" type="color" value="#8b5cf6" /></label>
+                  <label>Winkel <span class="input-with-unit"><input id="gradientAngle" type="number" min="0" max="360" step="1" value="0" inputmode="numeric" /><i>°</i></span></label>
+                </div>
+                <button id="applyGradient" type="button" disabled>Farbverlauf auf Auswahl</button>
+                <small>0° verläuft von links nach rechts. Der Verlauf richtet sich an der gesamten Auswahl aus.</small>
+              </details>
+              <details class="editor-tool-panel">
+                <summary>Boolean (2 Pfade)</summary>
+                <p class="editor-empty">Der zuletzt aktive Pfad bleibt erhalten. Vereinigung kombiniert Pfaddaten; Differenz und Schnittmenge bleiben als kompatible SVG-Maske bzw. -Clipping exportierbar.</p>
+                <div class="editor-command-grid editor-boolean-grid">
+                  <button id="booleanUnion" type="button" disabled>Vereinigung</button>
+                  <button id="booleanDifference" type="button" disabled>Differenz</button>
+                  <button id="booleanIntersection" type="button" disabled>Schnittmenge</button>
+                </div>
+                <small>Für präzise Geometrie werden nur zwei unverformte Pfade akzeptiert; zuvor verschobene Pfade lassen sich über „Änderungen verwerfen“ zurücksetzen.</small>
+              </details>
+              <div class="auto-select-panel">
+                <div class="auto-select-heading">
+                  <h4>Auto-Auswahl</h4>
+                  <label class="check editor-inline-check"><input id="selectionRuleAdditive" type="checkbox" /> Auswahl ergänzen</label>
+                </div>
+                <div class="auto-select-actions">
+                  <button id="selectPathsByColor" type="button" disabled>Gleiche Farbe wählen</button>
+                  <label>Boxfläche kleiner als
+                    <span class="input-with-unit"><input id="selectMaxArea" type="number" min="0" step="1" value="250" inputmode="decimal" /><i>SVG²</i></span>
+                  </label>
+                  <button id="selectSmallPaths" type="button" disabled>Kleine wählen</button>
+                  <label>Boxfläche größer als
+                    <span class="input-with-unit"><input id="selectMinArea" type="number" min="0" step="1" value="2500" inputmode="decimal" /><i>SVG²</i></span>
+                  </label>
+                  <button id="selectLargePaths" type="button" disabled>Große wählen</button>
+                  <label>Abstand zur Auswahl
+                    <span class="input-with-unit"><input id="selectNearbyDistance" type="number" min="0" step="1" value="40" inputmode="decimal" /><i>SVG</i></span>
+                  </label>
+                  <button id="selectNearbyPaths" type="button" disabled>Nahe wählen</button>
+                </div>
+                <small>„Nahe“ verwendet den zuletzt ausgewählten Pfad als Referenz. Die Boxfläche ist ideal für Punktartefakte; bei Bedarf die Grenzwerte an die SVG-Größe anpassen.</small>
+              </div>
+              <h3 class="editor-action-heading">Ausgewählte Pfade</h3>
+              <div class="editor-actions">
+                <button id="showNodes" type="button" disabled>Stützpunkte anzeigen</button>
+                <button id="smoothSelectedPath" type="button" disabled>Pfad glätten</button>
+                <button id="deleteSelectedPath" type="button" class="danger-button" disabled>Auswahl löschen</button>
+                <button id="resetSvgEditor" type="button" disabled>Änderungen verwerfen</button>
+              </div>
+              <label class="selected-path-color">Farbe der Auswahl
+                <input id="selectedPathColor" type="color" value="#111111" disabled />
+              </label>
+              <label>Glättungsstärke <span id="editorSmoothing_value">55</span>
+                <input id="editorSmoothing" type="range" min="0" max="100" value="55" />
+              </label>
+              <small>Die Pfadglättung arbeitet nur auf zusammenhängenden Konturen. Mehrteilige Potrace-Pfade bleiben unverändert geschützt.</small>
+            </section>
+          </div>
+        </section>
+      </div>
+      <section class="card metrics-card">
+        <div class="metrics-heading"><div><span class="card-kicker">Datei-Check</span><h2>Analyse</h2></div><p>Aktuelle SVG-Werte</p></div>
+        <dl id="metrics">
+          <dt>Engine</dt><dd>—</dd>
+          <dt>Pfade</dt><dd>—</dd>
+          <dt>Dateigröße</dt><dd>—</dd>
+          <dt>ViewBox</dt><dd>—</dd>
+        </dl>
+      </section>
+    </section>
+  </main>
+
+</body>
+</html>
