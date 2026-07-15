@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
   <title>Kontur – Vektorwerkzeug</title>
-  <script type="module" crossorigin src="./assets/tool-8g7IfiAO.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/preferences-BocDan-e.js">
-  <link rel="stylesheet" crossorigin href="./assets/tool-DD53dsA3.css">
+  <script type="module" crossorigin src="./assets/tool-DkAbWUyU.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/preferences-DaiKgHeC.js">
+  <link rel="stylesheet" crossorigin href="./assets/tool-B0LeKZl0.css">
 </head>
 <body data-mode="auto">
   <a class="skip-link" href="#workspace">Direkt zum Arbeitsbereich springen</a>
@@ -29,31 +29,8 @@
         <label class="preference-select"><span class="visually-hidden">Sprache</span><select id="languageSelect" aria-label="Sprache"><option value="de">Deutsch</option><option value="en">English</option></select></label>
         <button id="themeToggle" class="theme-toggle" type="button" aria-label="Farbschema ändern" aria-pressed="false"><span aria-hidden="true">◐</span><span class="theme-label">Darstellung</span></button>
       </div>
-      <button id="dependenciesButton" class="pill dependency-trigger" type="button" aria-haspopup="dialog" aria-controls="dependenciesDialog" aria-expanded="false" aria-label="Technik und Lizenzen anzeigen">
-        Info
-      </button>
     </div>
   </header>
-  <dialog id="dependenciesDialog" class="dependencies-dialog" aria-labelledby="dependenciesTitle">
-    <div class="dependencies-dialog-header">
-      <div>
-        <p class="eyebrow">Technik &amp; Lizenzen</p>
-        <h2 id="dependenciesTitle">Worauf Kontur aufbaut</h2>
-      </div>
-      <button id="closeDependencies" type="button" class="dialog-close" aria-label="Hinweis schließen">×</button>
-    </div>
-    <p>Kontur kombiniert bewährte Open-Source-Werkzeuge für Vektorisierung, Bildverarbeitung und die Weboberfläche.</p>
-    <p id="engineStatus" class="dependency-engine">Engine wird geprüft …</p>
-    <div class="dependency-list" role="list">
-      <article role="listitem"><strong><a href="https://potrace.sourceforge.net/" target="_blank" rel="noreferrer">Potrace</a></strong><span>Kontur- und Pfadvektorisierung · GPL-2.0</span></article>
-      <article role="listitem"><strong><a href="https://www.npmjs.com/package/esm-potrace-wasm" target="_blank" rel="noreferrer">esm-potrace-wasm</a></strong><span>Potrace im Browser per WebAssembly · GPL-2.0</span></article>
-      <article role="listitem"><strong><a href="https://github.com/jankovicsandras/imagetracerjs" target="_blank" rel="noreferrer">ImageTracerJS</a></strong><span>Optionale Farblayer-Vergleichsengine · Unlicense</span></article>
-      <article role="listitem"><strong><a href="https://fastapi.tiangolo.com/" target="_blank" rel="noreferrer">FastAPI</a> · <a href="https://www.uvicorn.org/" target="_blank" rel="noreferrer">Uvicorn</a></strong><span>Server-API und lokale Laufzeit</span></article>
-      <article role="listitem"><strong><a href="https://python-pillow.org/" target="_blank" rel="noreferrer">Pillow</a> · <a href="https://numpy.org/" target="_blank" rel="noreferrer">NumPy</a> · <a href="https://scipy.org/" target="_blank" rel="noreferrer">SciPy</a></strong><span>Bildverarbeitung, Analyse und Filter</span></article>
-      <article role="listitem"><strong><a href="https://vite.dev/" target="_blank" rel="noreferrer">Vite</a></strong><span>Statischer Browser-Build für GitHub Pages</span></article>
-    </div>
-    <small>Die vollständigen direkten Abhängigkeiten stehen in <code>requirements.txt</code>, <code>package.json</code> und <code>package-lock.json</code>. Für die Veröffentlichung gelten die jeweiligen Lizenzbedingungen der verwendeten Projekte.</small>
-  </dialog>
   <p id="modeHint" class="mode-hint"></p>
 
   <main class="layout">
@@ -65,20 +42,6 @@
         <input id="file" class="visually-hidden" type="file" accept="image/*,.pbm,.pgm,.ppm,.bmp,.tif,.tiff" aria-describedby="fileHelp" />
         <p id="fileHelp">Ziehe ein Bild hierher oder wähle eine Datei. Die Vorschau wird automatisch erstellt.</p>
         <p class="upload-formats">PNG · JPG · WebP · BMP · TIFF</p>
-      </section>
-
-      <section class="card guide-card" id="guideCard" data-modes="auto">
-        <div class="section-label"><span>Dein Ablauf</span></div>
-        <h2>In drei klaren Schritten.</h2>
-        <ol class="guide-list">
-          <li><strong>Bild hochladen</strong><span>Auto startet direkt mit Potrace.</span></li>
-          <li><strong>Bei Bedarf feinjustieren</strong><span>In Standard oder Expert kannst du Farben, Glättung und Engine ändern.</span></li>
-          <li><strong>Ergebnis prüfen &amp; exportieren</strong><span>SVG, Vergleich und Pfad-Editor helfen beim letzten Feinschliff.</span></li>
-        </ol>
-        <details>
-          <summary>Wann nehme ich welche Engine?</summary>
-          <p><strong>Potrace</strong> ist der Standard und für Text, Logos und klare Konturen empfohlen. <strong>ImageTracerJS</strong> ist eine freiwillige Alternative zum Vergleichen von Farblayern; es wird nie automatisch gewählt.</p>
-        </details>
       </section>
 
       <section class="card auto-summary" id="autoSummaryCard" data-modes="auto">
@@ -118,6 +81,27 @@
       <section class="card settings-card control-group" data-modes="standard expert">
         <div class="control-group-heading"><div><span class="section-label">Bild</span><h2>Vorverarbeitung</h2></div><span class="control-group-note">Optional</span></div>
         <p class="browser-capability-note" id="browserPreprocessNote" hidden>Browser-Version: Alpha, Tonwerte, Blur und Schwellwerte laufen lokal. Der adaptive Schwellwert ist browserseitig eine lokale Näherung. Median, Morphologie und Objektfilter gibt es in der Server-Version.</p>
+        <label>Trace-Auflösung
+          <select id="trace_max_dimension" name="trace_max_dimension" aria-describedby="traceSizeHelp">
+            <option value="auto">Auto · große Bilder bis 2048 px</option>
+            <option value="3200">Hoch · bis 3200 px</option>
+            <option value="2048">Ausgewogen · bis 2048 px</option>
+            <option value="1280">Einfach · bis 1280 px</option>
+            <option value="0">Originalgröße</option>
+          </select>
+          <small id="traceSizeHelp">Verkleinern glättet Foto-Rauschen und verhindert unnötig viele Pfade. Die Originaldatei bleibt unverändert.</small>
+        </label>
+        <p id="traceSizeSummary" class="trace-size-summary" aria-live="polite">Die Trace-Größe wird nach dem Upload angezeigt.</p>
+        <label class="check"><input id="auto_levels" name="auto_levels" type="checkbox" /> Tonwerte automatisch strecken</label>
+        <small class="preprocess-help">Hilft bei blassen Scans und Fotos mit wenig Kontrast. Für Logos mit bewusst feinen Grautönen ausgeschaltet lassen.</small>
+        <label>Kantenbereinigung
+          <select id="preprocess_cleanup" name="preprocess_cleanup">
+            <option value="none">Keine</option>
+            <option value="light">Leicht · Einzelpixel entfernen</option>
+            <option value="strong">Stärker · Komprimierungsrauschen glätten</option>
+          </select>
+          <small>Wirkt nur auf die monochrome Trace-Maske. Dünne Details sind mit „Keine“ am sichersten.</small>
+        </label>
         <label>Schwellwertmodus
           <select id="threshold_mode" name="threshold_mode">
             <option value="otsu">Otsu automatisch</option>
@@ -230,14 +214,15 @@
           <input id="posterize_color_merge" name="posterize_color_merge" type="range" min="0" max="100" step="1" value="28" />
           <small>Gleicht nur kleine, direkt angrenzende Farbfragmente an. 0 deaktiviert diese Bereinigung.</small>
         </label>
-        <label>Speckle-Filter <span id="posterize_min_region_value">0</span> px
-          <input id="posterize_min_region" name="posterize_min_region" type="range" min="0" max="60" step="1" value="0" />
-          <small>Entfernt isolierte Farbinseln entlang der Konturen. Kleine Werte von 2–6 eignen sich gut für komprimierte Logos.</small>
+        <label class="check"><input id="auto_remove_small_elements" name="auto_remove_small_elements" type="checkbox" checked /> Kleine Elemente automatisch entfernen</label>
+        <label>Minimale Elementgröße <span id="posterize_min_region_value">12</span> px
+          <input id="posterize_min_region" name="posterize_min_region" type="range" min="1" max="320" step="1" value="12" />
+          <small>Entfernt isolierte Elemente unter dieser Pixelgröße vor dem Trace. Mit aktivem Auto wächst der Grenzwert bei großen Bildern mit; für feine Details Auto ausschalten oder 1–2 px wählen.</small>
         </label>
         <div id="layers" class="layers"></div>
       </section>
 
-      <section class="card export-card">
+      <section class="card export-card" data-browser-server-only>
         <div class="control-group-heading"><div><span class="section-label">Schritt 4</span><h2>Export</h2></div><span class="control-group-note">Final</span></div>
         <div class="button-row export-row">
           <button type="button" data-backend="svg">SVG</button>
@@ -276,6 +261,7 @@
         <div class="workspace-actions">
           <span class="workspace-local"><i aria-hidden="true"></i> Lokal verarbeitet</span>
           <button id="workspaceExport" type="button" class="workspace-export" data-backend="svg" disabled>SVG exportieren <span aria-hidden="true">↓</span></button>
+          <button id="workspaceRasterExport" type="button" class="workspace-raster-export" disabled>PNG exportieren</button>
         </div>
       </div>
       <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true"></i>Bereit.</div>
@@ -300,9 +286,16 @@
               <h2>Original &amp; Vorlage</h2>
               <p>Dein Bild und die aufbereitete Trace-Vorlage.</p>
             </div>
-            <div class="preview-switch" role="group" aria-label="Rasteransicht">
-              <button type="button" data-source-view-btn="original">Original</button>
-              <button type="button" data-source-view-btn="layers"><span id="maskPreviewTitle">Binärmaske</span></button>
+            <div class="preview-header-actions">
+              <div class="preview-switch" role="group" aria-label="Rasteransicht">
+                <button type="button" data-source-view-btn="original">Original</button>
+                <button type="button" data-source-view-btn="layers"><span id="maskPreviewTitle">Binärmaske</span></button>
+              </div>
+              <div class="zoom-controls" role="group" aria-label="Bitmap-Zoom">
+                <button type="button" data-preview-zoom="source" data-preview-zoom-step="out" aria-label="Bitmap verkleinern" title="Verkleinern">−</button>
+                <output id="sourceZoomLevel" aria-live="polite">100%</output>
+                <button type="button" data-preview-zoom="source" data-preview-zoom-step="in" aria-label="Bitmap vergrößern" title="Vergrößern">+</button>
+              </div>
             </div>
           </div>
           <div class="stage source-stage">
@@ -318,9 +311,16 @@
               <h2>SVG prüfen</h2>
               <p id="resultViewHint">Klicke Pfade direkt in der SVG an, um sie zu bearbeiten.</p>
             </div>
-            <div class="preview-switch" role="group" aria-label="Vektoransicht">
-              <button type="button" data-result-view-btn="vector">SVG</button>
-              <button type="button" data-result-view-btn="compare">Vergleich</button>
+            <div class="preview-header-actions">
+              <div class="preview-switch" role="group" aria-label="Vektoransicht">
+                <button type="button" data-result-view-btn="vector">SVG</button>
+                <button type="button" data-result-view-btn="compare">Vergleich</button>
+              </div>
+              <div class="zoom-controls" role="group" aria-label="Vektor-Zoom">
+                <button type="button" data-preview-zoom="vector" data-preview-zoom-step="out" aria-label="Vektor verkleinern" title="Verkleinern">−</button>
+                <output id="vectorZoomLevel" aria-live="polite">100%</output>
+                <button type="button" data-preview-zoom="vector" data-preview-zoom-step="in" aria-label="Vektor vergrößern" title="Vergrößern">+</button>
+              </div>
             </div>
           </div>
           <div class="result-panel" id="vectorResultPanel">
@@ -354,6 +354,26 @@
               <button type="button" data-editor-proxy="redoEditor" aria-label="Wiederholen" title="Wiederholen">↷</button>
               <button type="button" data-editor-proxy="resetSvgEditor" aria-label="Änderungen verwerfen" title="Änderungen verwerfen">↺</button>
               <button id="exportEditedSvg" type="button" disabled>Exportieren</button>
+            </div>
+          </div>
+          <div id="editorContextToolbar" class="editor-context-toolbar" role="toolbar" aria-label="Werkzeuge für die aktuelle Auswahl">
+            <div class="editor-context-summary">
+              <strong id="editorSelectionCount">Keine Auswahl</strong>
+              <small id="editorSelectionBounds">Wähle einen oder mehrere Pfade.</small>
+            </div>
+            <div class="editor-context-actions">
+              <div class="editor-nudge-actions" role="group" aria-label="Auswahl schrittweise verschieben">
+                <button type="button" data-editor-nudge="left" aria-label="Nach links verschieben" title="Nach links verschieben">←</button>
+                <button type="button" data-editor-nudge="up" aria-label="Nach oben verschieben" title="Nach oben verschieben">↑</button>
+                <button type="button" data-editor-nudge="down" aria-label="Nach unten verschieben" title="Nach unten verschieben">↓</button>
+                <button type="button" data-editor-nudge="right" aria-label="Nach rechts verschieben" title="Nach rechts verschieben">→</button>
+              </div>
+              <button type="button" data-editor-proxy="duplicateSelectedPaths">Duplizieren</button>
+              <button type="button" data-editor-proxy="mirrorSelectionHorizontal" aria-label="Horizontal spiegeln" title="Horizontal spiegeln">↔</button>
+              <button type="button" data-editor-proxy="mirrorSelectionVertical" aria-label="Vertikal spiegeln" title="Vertikal spiegeln">↕</button>
+              <button type="button" data-editor-proxy="groupSelectedPaths">Gruppieren</button>
+              <label class="editor-context-color">Farbe <input id="quickSelectedPathColor" type="color" value="#111111" disabled /></label>
+              <button type="button" data-editor-proxy="deleteSelectedPath" class="danger-button">Löschen</button>
             </div>
           </div>
           <div class="editor-grid">
@@ -400,11 +420,27 @@
                 <h4>Objekte</h4>
                 <div class="editor-command-grid">
                   <button id="duplicateSelectedPaths" type="button" disabled>Duplizieren</button>
+                  <button id="mirrorSelectionHorizontal" type="button" disabled>Horizontal spiegeln</button>
+                  <button id="mirrorSelectionVertical" type="button" disabled>Vertikal spiegeln</button>
                   <button id="sendSelectionBackward" type="button" disabled>Eine Ebene zurück</button>
                   <button id="bringSelectionForward" type="button" disabled>Eine Ebene vor</button>
                   <button id="sendSelectionToBack" type="button" disabled>Ganz nach hinten</button>
                   <button id="bringSelectionToFront" type="button" disabled>Ganz nach vorn</button>
                 </div>
+                <h4>Drehen &amp; Größe</h4>
+                <div class="editor-command-grid">
+                  <button id="rotateSelectionLeft" type="button" disabled>90° nach links</button>
+                  <button id="rotateSelectionRight" type="button" disabled>90° nach rechts</button>
+                  <button id="scaleSelectionDown" type="button" disabled>10% kleiner</button>
+                  <button id="scaleSelectionUp" type="button" disabled>10% größer</button>
+                </div>
+                <h4>Struktur</h4>
+                <div class="editor-command-grid">
+                  <button id="groupSelectedPaths" type="button" disabled>Gruppieren</button>
+                  <button id="ungroupSelectedPaths" type="button" disabled>Gruppe auflösen</button>
+                  <button id="splitSelectedPaths" type="button" disabled>Zusammengesetzten Pfad trennen</button>
+                </div>
+                <small>„Trennen“ teilt Pfade mit mehreren Konturen in einzeln bearbeitbare Formen auf. Die Originalreihenfolge bleibt erhalten.</small>
                 <h4>Ausrichten</h4>
                 <div class="editor-command-grid editor-align-grid">
                   <button id="alignSelectionLeft" type="button" disabled>Links</button>
@@ -465,6 +501,7 @@
               <div class="editor-actions">
                 <button id="showNodes" type="button" disabled>Stützpunkte anzeigen</button>
                 <button id="smoothSelectedPath" type="button" disabled>Pfad glätten</button>
+                <button id="fourierSimplifySelectedPath" type="button" disabled>Organisch vereinfachen</button>
                 <button id="deleteSelectedPath" type="button" class="danger-button" disabled>Auswahl löschen</button>
                 <button id="resetSvgEditor" type="button" disabled>Änderungen verwerfen</button>
               </div>
@@ -474,7 +511,23 @@
               <label>Glättungsstärke <span id="editorSmoothing_value">55</span>
                 <input id="editorSmoothing" type="range" min="0" max="100" value="55" />
               </label>
+              <label>Fourier-Vereinfachung
+                <select id="fourierMode">
+                  <option value="off" selected>Aus</option>
+                  <option value="auto">Automatik</option>
+                  <option value="manual">Manuell</option>
+                </select>
+              </label>
+              <label id="fourierManualControls" hidden>Fourier-Genauigkeit
+                <select id="fourierTolerance">
+                  <option value="0.25">Hoch · Abweichung bis 0,25 SVG-Einheiten</option>
+                  <option value="0.5" selected>Ausgewogen · bis 0,5 SVG-Einheiten</option>
+                  <option value="1">Kompakt · bis 1 SVG-Einheit</option>
+                </select>
+              </label>
+              <small>„Organisch vereinfachen“ eignet sich für geschlossene Einzelkonturen. Schrift, Ecken, Löcher und mehrteilige Potrace-Pfade bleiben geschützt.</small>
               <small>Die Pfadglättung arbeitet nur auf zusammenhängenden Konturen. Mehrteilige Potrace-Pfade bleiben unverändert geschützt.</small>
+              <p class="editor-shortcuts"><strong>Tastatur:</strong> Alt+F10 Schnellleiste · ⌘/Ctrl+A auswählen · ⌘/Ctrl+D duplizieren · ⌘/Ctrl+G gruppieren · Pfeile verschieben · Shift+Pfeile 10 px · Entf löschen · Esc Auswahl aufheben</p>
             </section>
           </div>
         </section>
