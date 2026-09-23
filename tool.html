@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
   <title>Kontur – Vektorwerkzeug</title>
-  <script type="module" crossorigin src="./assets/tool-DkAbWUyU.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/preferences-DaiKgHeC.js">
-  <link rel="stylesheet" crossorigin href="./assets/tool-B0LeKZl0.css">
+  <script type="module" crossorigin src="./assets/tool-CGHdhoZq.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/preferences-Owb044RN.js">
+  <link rel="stylesheet" crossorigin href="./assets/tool-yxdiCHth.css">
 </head>
 <body data-mode="auto">
   <a class="skip-link" href="#workspace">Direkt zum Arbeitsbereich springen</a>
+  <div class="drop-overlay" aria-hidden="true"><p><span>+</span>Bild hier ablegen</p></div>
   <header class="topbar">
     <div class="topbar-heading">
       <a href="./" class="tool-home brand-lockup" aria-label="Kontur Startseite">
@@ -40,7 +41,7 @@
         <h2>Bild auswählen</h2>
         <label class="file-picker" for="file" tabindex="0"><span class="file-picker-icon" aria-hidden="true">+</span><span>Bilddatei auswählen</span></label>
         <input id="file" class="visually-hidden" type="file" accept="image/*,.pbm,.pgm,.ppm,.bmp,.tif,.tiff" aria-describedby="fileHelp" />
-        <p id="fileHelp">Ziehe ein Bild hierher oder wähle eine Datei. Die Vorschau wird automatisch erstellt.</p>
+        <p id="fileHelp">Ziehe ein Bild ins Fenster, wähle eine Datei oder füge es mit ⌘/Ctrl+V ein. Die Vorschau wird automatisch erstellt.</p>
         <p class="upload-formats">PNG · JPG · WebP · BMP · TIFF</p>
       </section>
 
@@ -76,6 +77,86 @@
           <button type="button" data-preset="plotter">Plotter</button>
           <button type="button" data-preset="smooth_icon">Smooth Icon</button>
         </div>
+      </section>
+
+      <section class="card settings-card control-group" data-modes="standard expert">
+        <div class="control-group-heading"><div><span class="section-label">Schritt 3</span><h2>Trace konfigurieren</h2></div><span class="control-group-note">SVG</span></div>
+        <label id="traceEngineCard">Browser-Trace-Engine
+          <select id="traceEngine" name="traceEngine">
+            <option value="potrace">Potrace-WASM · empfohlen</option>
+            <option value="imagetracer">ImageTracerJS · nur zum Vergleichen</option>
+          </select>
+          <small>Potrace bleibt die Voreinstellung – auch für Farbbilder. Die Auswahl läuft lokal im Browser.</small>
+        </label>
+        <label data-modes="standard">Kurvenglättung &amp; Punkte verbinden <span id="smoothness_value">50</span>
+          <input id="smoothness" type="range" min="0" max="100" step="1" value="50" />
+          <small>Links konturtreu, rechts glatter und mit weniger kleinen Punktinseln.</small>
+        </label>
+        <label>Farbe
+          <input id="color" name="color" type="color" value="#111111" />
+        </label>
+        <label data-modes="expert">Turdsize <span id="turdsize_value">2</span>
+          <input id="turdsize" name="turdsize" type="range" min="0" max="100" step="1" value="2" />
+        </label>
+        <label data-modes="expert">Turnpolicy
+          <select id="turnpolicy" name="turnpolicy">
+            <option value="minority">minority</option>
+            <option value="majority">majority</option>
+            <option value="black">black</option>
+            <option value="white">white</option>
+            <option value="left">left</option>
+            <option value="right">right</option>
+            <option value="random">random</option>
+          </select>
+        </label>
+        <label data-modes="expert">Alphamax <span id="alphamax_value">1</span>
+          <input id="alphamax" name="alphamax" type="range" min="0" max="1.333" step="0.01" value="1" />
+        </label>
+        <label class="check" data-modes="expert"><input id="opticurve" name="opticurve" type="checkbox" checked /> Opticurve aktiv</label>
+        <label data-modes="expert">Opttolerance <span id="opttolerance_value">0.2</span>
+          <input id="opttolerance" name="opttolerance" type="range" min="0" max="2" step="0.01" value="0.2" />
+        </label>
+        <label data-modes="expert">SVG-Präzision <span id="svg_precision_value">3</span>
+          <input id="svg_precision" name="svg_precision" type="range" min="0" max="8" step="1" value="3" />
+        </label>
+        <label class="check" data-modes="expert"><input id="optimize_svg" name="optimize_svg" type="checkbox" checked /> SVG vereinfachen</label>
+        <label data-modes="expert">Kantengenauigkeit
+          <select id="trace_supersample" name="trace_supersample">
+            <option value="auto">Auto · Subpixel für kleine und mittlere Bilder</option>
+            <option value="off">Aus · Pixelraster direkt tracen</option>
+          </select>
+          <small>Subpixel nutzt die Kantenglättung des Originals und liefert glattere, genauere Kurven.</small>
+        </label>
+        <button id="traceButton" type="button" class="primary-button trace-action">Vorschau aktualisieren</button>
+      </section>
+
+      <section class="card settings-card control-group" data-modes="standard expert">
+        <div class="control-group-heading"><div><span class="section-label">Optional</span><h2>Farbe &amp; Layer</h2></div><span class="control-group-note">Mehrfarbig</span></div>
+        <p class="browser-capability-note" id="browserLayerNote" hidden>Browser-Version: Farblayer, Hintergrund-Erkennung, Farbinseln-Bereinigung und Kantenüberlappung laufen lokal. Sehr große Bilder benötigen dafür etwas mehr Rechenzeit.</p>
+        <label>Posterize-Farben <span id="posterize_levels_value">1</span>
+          <input id="posterize_levels" name="posterize_levels" type="range" min="1" max="12" step="1" value="1" />
+        </label>
+        <div id="posterizePalettePreview" class="posterize-palette-preview" aria-live="polite">
+          <p class="editor-empty">Nach dem Upload siehst du hier die voraussichtlichen Paletten für jede Farbanzahl.</p>
+        </div>
+        <label class="check"><input id="posterize_skip_background" name="posterize_skip_background" type="checkbox" checked /> dominanten/weißen Hintergrund überspringen</label>
+        <label>Farbflächen
+          <select id="layer_mode" name="layer_mode">
+            <option value="stacked">Gestapelt · lückenlos, weniger Knoten</option>
+            <option value="abutting">Angrenzend · jede Fläche einzeln</option>
+          </select>
+          <small>Gestapelte Flächen liegen übereinander, dadurch entstehen keine Haarlinien zwischen Farben.</small>
+        </label>
+        <label>Ähnliche Farbinseln angleichen <span id="posterize_color_merge_value">28</span>
+          <input id="posterize_color_merge" name="posterize_color_merge" type="range" min="0" max="100" step="1" value="28" />
+          <small>Gleicht nur kleine, direkt angrenzende Farbfragmente an. 0 deaktiviert diese Bereinigung.</small>
+        </label>
+        <label class="check"><input id="auto_remove_small_elements" name="auto_remove_small_elements" type="checkbox" checked /> Kleine Elemente automatisch entfernen</label>
+        <label>Minimale Elementgröße <span id="posterize_min_region_value">12</span> px
+          <input id="posterize_min_region" name="posterize_min_region" type="range" min="1" max="320" step="1" value="12" />
+          <small>Entfernt isolierte Elemente unter dieser Pixelgröße vor dem Trace. Mit aktivem Auto wächst der Grenzwert bei großen Bildern mit; für feine Details Auto ausschalten oder 1–2 px wählen.</small>
+        </label>
+        <div id="layers" class="layers"></div>
       </section>
 
       <section class="card settings-card control-group" data-modes="standard expert">
@@ -156,72 +237,6 @@
         </label>
       </section>
 
-      <section class="card settings-card control-group" data-modes="standard expert">
-        <div class="control-group-heading"><div><span class="section-label">Schritt 3</span><h2>Trace konfigurieren</h2></div><span class="control-group-note">SVG</span></div>
-        <label id="traceEngineCard">Browser-Trace-Engine
-          <select id="traceEngine" name="traceEngine">
-            <option value="potrace">Potrace-WASM · empfohlen</option>
-            <option value="imagetracer">ImageTracerJS · nur zum Vergleichen</option>
-          </select>
-          <small>Potrace bleibt die Voreinstellung – auch für Farbbilder. Die Auswahl läuft lokal im Browser.</small>
-        </label>
-        <label data-modes="standard">Kurvenglättung &amp; Punkte verbinden <span id="smoothness_value">50</span>
-          <input id="smoothness" type="range" min="0" max="100" step="1" value="50" />
-          <small>Links konturtreu, rechts glatter und mit weniger kleinen Punktinseln.</small>
-        </label>
-        <label>Farbe
-          <input id="color" name="color" type="color" value="#111111" />
-        </label>
-        <label data-modes="expert">Turdsize <span id="turdsize_value">2</span>
-          <input id="turdsize" name="turdsize" type="range" min="0" max="100" step="1" value="2" />
-        </label>
-        <label data-modes="expert">Turnpolicy
-          <select id="turnpolicy" name="turnpolicy">
-            <option value="minority">minority</option>
-            <option value="majority">majority</option>
-            <option value="black">black</option>
-            <option value="white">white</option>
-            <option value="left">left</option>
-            <option value="right">right</option>
-            <option value="random">random</option>
-          </select>
-        </label>
-        <label data-modes="expert">Alphamax <span id="alphamax_value">1</span>
-          <input id="alphamax" name="alphamax" type="range" min="0" max="1.333" step="0.01" value="1" />
-        </label>
-        <label class="check" data-modes="expert"><input id="opticurve" name="opticurve" type="checkbox" checked /> Opticurve aktiv</label>
-        <label data-modes="expert">Opttolerance <span id="opttolerance_value">0.2</span>
-          <input id="opttolerance" name="opttolerance" type="range" min="0" max="2" step="0.01" value="0.2" />
-        </label>
-        <label data-modes="expert">SVG-Präzision <span id="svg_precision_value">3</span>
-          <input id="svg_precision" name="svg_precision" type="range" min="0" max="8" step="1" value="3" />
-        </label>
-        <label class="check" data-modes="expert"><input id="optimize_svg" name="optimize_svg" type="checkbox" checked /> SVG vereinfachen</label>
-        <button id="traceButton" type="button" class="primary-button trace-action">Vorschau aktualisieren</button>
-      </section>
-
-      <section class="card settings-card control-group" data-modes="standard expert">
-        <div class="control-group-heading"><div><span class="section-label">Optional</span><h2>Farbe &amp; Layer</h2></div><span class="control-group-note">Mehrfarbig</span></div>
-        <p class="browser-capability-note" id="browserLayerNote" hidden>Browser-Version: Farblayer, Hintergrund-Erkennung, Farbinseln-Bereinigung und Kantenüberlappung laufen lokal. Sehr große Bilder benötigen dafür etwas mehr Rechenzeit.</p>
-        <label>Posterize-Farben <span id="posterize_levels_value">1</span>
-          <input id="posterize_levels" name="posterize_levels" type="range" min="1" max="12" step="1" value="1" />
-        </label>
-        <div id="posterizePalettePreview" class="posterize-palette-preview" aria-live="polite">
-          <p class="editor-empty">Nach dem Upload siehst du hier die voraussichtlichen Paletten für jede Farbanzahl.</p>
-        </div>
-        <label class="check"><input id="posterize_skip_background" name="posterize_skip_background" type="checkbox" checked /> dominanten/weißen Hintergrund überspringen</label>
-        <label>Ähnliche Farbinseln angleichen <span id="posterize_color_merge_value">28</span>
-          <input id="posterize_color_merge" name="posterize_color_merge" type="range" min="0" max="100" step="1" value="28" />
-          <small>Gleicht nur kleine, direkt angrenzende Farbfragmente an. 0 deaktiviert diese Bereinigung.</small>
-        </label>
-        <label class="check"><input id="auto_remove_small_elements" name="auto_remove_small_elements" type="checkbox" checked /> Kleine Elemente automatisch entfernen</label>
-        <label>Minimale Elementgröße <span id="posterize_min_region_value">12</span> px
-          <input id="posterize_min_region" name="posterize_min_region" type="range" min="1" max="320" step="1" value="12" />
-          <small>Entfernt isolierte Elemente unter dieser Pixelgröße vor dem Trace. Mit aktivem Auto wächst der Grenzwert bei großen Bildern mit; für feine Details Auto ausschalten oder 1–2 px wählen.</small>
-        </label>
-        <div id="layers" class="layers"></div>
-      </section>
-
       <section class="card export-card" data-browser-server-only>
         <div class="control-group-heading"><div><span class="section-label">Schritt 4</span><h2>Export</h2></div><span class="control-group-note">Final</span></div>
         <div class="button-row export-row">
@@ -271,6 +286,7 @@
           <h2 id="quickstartTitle">Zieh dein Bild in den Vektor-Workflow.</h2>
           <p>Wähle eine Datei aus und Kontur erstellt direkt eine lokale SVG-Vorschau. Danach vergleichst, bearbeitest und exportierst du das Ergebnis.</p>
           <label class="welcome-upload" for="file"><span aria-hidden="true">+</span> Bild auswählen</label>
+          <p class="welcome-hint">oder Bild ins Fenster ziehen · ⌘/Ctrl+V zum Einfügen</p>
         </div>
         <div class="workflow-steps" aria-label="Arbeitsablauf">
           <span><i>1</i><b>Hochladen</b><small>PNG, JPG, WebP und mehr</small></span>
@@ -473,7 +489,7 @@
                   <button id="booleanDifference" type="button" disabled>Differenz</button>
                   <button id="booleanIntersection" type="button" disabled>Schnittmenge</button>
                 </div>
-                <small>Für präzise Geometrie werden nur zwei unverformte Pfade akzeptiert; zuvor verschobene Pfade lassen sich über „Änderungen verwerfen“ zurücksetzen.</small>
+                <small>Differenz und Schnittmenge funktionieren auch mit verschobenen Pfaden. Die Vereinigung benötigt zwei unverschobene Pfade aus derselben Ebene.</small>
               </details>
               <div class="auto-select-panel">
                 <div class="auto-select-heading">
